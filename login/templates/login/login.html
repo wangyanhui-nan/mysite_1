@@ -1,0 +1,69 @@
+<!--模板语言{# {% extends 'base.html' %} #}，表示当前页面继承base.html文件中的所有内容。-->
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}登陆{% endblock %}
+{% block css%}<link href="{% static 'css/login.css' %}" rel="stylesheet"/>{% endblock %}
+
+{% comment %}
+{% block content %}
+    <div class="container">
+        <div class="col-md-4 col-md-offset-4">
+            <form class="form-login" action="/login/" method="post">
+                {% if message %}
+                    <div class="alert alert-warning">{{message}}</div>
+                {% endif %}
+                {% csrf_token %}
+                <h2 class="text-center">欢迎登陆</h2>
+                <div class="form-group">
+                    <label for="id_username">用户名：</label>
+                    <input type="text" name="username" class="form-control" id="id_username" placeholder="Username" autofocus required>
+                </div>
+                <div class="form-group">
+                    <label for="id_password">密码：</label>
+                    <input type="password" name="password" class="form-control" id="id_password" placeholder="Password" required>
+                </div>
+                <button type="reset" class="btn btn-default pull-left">重置</button>
+                <button type="submit" class="btn btn-primary pull-right">提交</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% endcomment %}
+
+
+{% comment %}
+Django生成的表单
+你没有看错！一个{{ login_form }}就直接完成了表单内容的生成工作！login_form这个名称来自你在视图函数中生成的form实例的变量名！
+但是，它不会生成<form>...</form>标签，这个要自己写；
+使用POST的方法时，必须添加{% csrf_token %}标签，用于处理csrf安全机制；
+Django自动为每个input元素设置了一个id名称，对应label的for参数
+重置和提交按钮需要自己写，Django不会帮你生成！
+{% endcomment %}
+{% block content %}
+    <div class="container">
+        <div class="col-md-4 col-md-offset-4">
+            <form class="form-login" action="/login/" method="post">
+                {% if message %}
+                    <div class="alert alert-warning">{{ message }}</div>
+                {% endif %}
+                {% csrf_token %}
+                <h2 class="text-center">欢迎登陆</h2>
+                <div class="form-group">
+                  {{ login_form.username.label_tag }}
+                  {{ login_form.username}}
+                </div>
+                <div class="form-group">
+                  {{ login_form.password.label_tag }}
+                  {{ login_form.password }}
+                </div>
+                <div class="form-group">
+                    {{ login_form.captcha.errors }}    <!-- 用于明确指示用户，你的验证码不正确-->
+                    {{ login_form.captcha.label_tag }}
+                    {{ login_form.captcha}}
+                </div>
+                <button type="reset" class="btn btn-default pull-left">重置</button>
+                <button type="submit" class="btn btn-primary pull-right">提交</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
